@@ -2,11 +2,15 @@ package main
 
 import (
 	"fmt"
+	"go-auth/pkg/api"
+	"go-auth/pkg/repository/user"
+	"go-auth/pkg/service"
+	"log"
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"log"
-	"net/http"
 )
 
 type App struct {

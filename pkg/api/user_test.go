@@ -3,14 +3,16 @@ package api
 import (
 	"database/sql/driver"
 	"encoding/json"
+	"go-auth/pkg/model"
+	"go-auth/pkg/repository/user"
+	"go-auth/pkg/service"
+
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/go-test/deep"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	"github.com/stretchr/testify/assert"
-	"github.com/yigittopm/go-auth/pkg/model"
-	"github.com/yigittopm/go-auth/pkg/repository/user"
-	"github.com/yigittopm/go-auth/pkg/service"
+
 	"net/http"
 	"net/http/httptest"
 	"regexp"

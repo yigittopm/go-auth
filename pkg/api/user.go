@@ -2,12 +2,13 @@ package api
 
 import (
 	"encoding/json"
-	"github.com/gorilla/mux"
-	"go-api/pkg/model"
-	"go-api/pkg/service"
+	"go-auth/pkg/model"
+	"go-auth/pkg/service"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 type UserAPI struct {
