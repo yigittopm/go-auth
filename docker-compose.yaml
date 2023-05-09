@@ -1,20 +1,22 @@
-version: "3.1"
+version: '3.8'
 
 services:
-  github.com/yigittopm/go-auth:
-    container_name: demo-go
+  api:
     build: ./
+    env_file:
+      - .env
+    ports:
+      - "3001:3001"
     depends_on:
       - db
   db:
-    container_name: demo-pg
-    image: postgres:14.1-alpine
+    image: postgres:latest
     restart: always
-    environment:
-      - POSTGRES_DB=analytic
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
     ports:
-      - '5432:5432'
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - /var/folders/go-auth:/var/lib/postgresql/data
