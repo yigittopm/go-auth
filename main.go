@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
+	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/joho/godotenv"
 	"go-auth/pkg/api"
 	"go-auth/pkg/repository/user"
 	"go-auth/pkg/service"
 	"log"
 	"net/http"
-
-	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"os"
 )
 
 type App struct {
@@ -18,15 +19,22 @@ type App struct {
 	DB     *gorm.DB
 }
 
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
 func main() {
 	app := App{}
 
 	app.initialize(
-		"localhost",
-		"5432",
-		"postgres",
-		"postgres",
-		"analytic",
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_PORT"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"),
 	)
 
 	app.routes()
@@ -43,7 +51,7 @@ func (app *App) initialize(host, port, username, password, dbname string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	fmt.Println("Successfully connect to the database.")
 	// Router
 	app.Router = mux.NewRouter()
 }
