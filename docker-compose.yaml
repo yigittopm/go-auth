@@ -9,6 +9,7 @@ services:
       - "3001:3001"
     depends_on:
       - db
+      - cache
   db:
     image: postgres:latest
     restart: always
@@ -20,3 +21,13 @@ services:
       - POSTGRES_DB=${DB_NAME}
     volumes:
       - /var/folders/go-auth:/var/lib/postgresql/data
+  cache:
+    image: redis
+    ports:
+      - "6379:6379"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    depends_on:
+      - db
+
+

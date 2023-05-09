@@ -2,22 +2,27 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
+	"go-auth/pkg/cache"
 	"go-auth/pkg/model"
 	"go-auth/pkg/service"
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gorilla/mux"
 )
 
 type UserAPI struct {
 	UserService service.UserService
+	client      *cache.Client
 }
 
-func NewUserAPI(u service.UserService) UserAPI {
+func NewUserAPI(u service.UserService, c *cache.Client) UserAPI {
 	return UserAPI{
 		UserService: u,
+		client:      c,
 	}
 }
 
@@ -42,12 +47,37 @@ func (u *UserAPI) FindByID() http.HandlerFunc {
 			return
 		}
 
+		// Caching
+		value, _ := u.client.Get(string(id))
+		if value != nil {
+			var user *model.User
+			data := fmt.Sprintf("CACHE: %v", value)
+			err := json.Unmarshal(value, &user)
+			if err != nil {
+				log.Println(err)
+			}
+			fmt.Println(data)
+			RespondWithJSON(w, http.StatusOK, model.ToUserDTO(user))
+			return
+		}
+
 		user, err := u.UserService.FindById(uint(id))
 		if err != nil {
 			RespondWithError(w, http.StatusNotFound, err.Error())
 			return
 		}
 
+		// Caching set
+		data, err := json.Marshal(user)
+		if err != nil {
+			fmt.Println(err)
+		}
+		err = u.client.Set(string(id), data, time.Second*10)
+		fmt.Println("CACHELENDI")
+
+		if err != nil {
+			log.Println(err)
+		}
 		RespondWithJSON(w, http.StatusOK, model.ToUserDTO(user))
 	}
 }
