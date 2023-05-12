@@ -10,20 +10,24 @@ Analytic Microservice Example with Golang-Nestjs-React-Rabbitmq
 
 ### Dependencies
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
+* Go 1.20
 
 ### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+* [Download Golang](https://go.dev/dl/)
+* [Download Docker](https://www.docker.com/)
+
 
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
+* Start docker app
+
+```sh
+docker build .
 ```
-code blocks for commands
+
+```sh
+docker compose up
 ```
 
 ## Help
