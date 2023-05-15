@@ -41,8 +41,8 @@ command to run if program contains helper info
 
 Contributors names and contact info
 
-ex. Mert Yiğittop
-ex. [@yigittopm](https://github.com/yigittopm)
+Mert Yiğittop
+[@yigittopm](https://github.com/yigittopm)
 
 ## Version History
 
