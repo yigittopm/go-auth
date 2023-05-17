@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql/driver"
 	"encoding/json"
+	"go-auth/pkg/cache"
 	"go-auth/pkg/model"
 	"go-auth/pkg/repository/user"
 	"go-auth/pkg/service"
@@ -35,9 +36,10 @@ func routerSetup(api UserAPI) *mux.Router {
 }
 
 func apiSetup(db *gorm.DB) UserAPI {
+	client := cache.New()
 	userReposiyory := user.NewRepository(db)
 	userService := service.NewUserService(userReposiyory)
-	userApi := NewUserAPI(userService)
+	userApi := NewUserAPI(userService, client)
 
 	return userApi
 }
