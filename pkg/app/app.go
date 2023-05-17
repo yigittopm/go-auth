@@ -7,8 +7,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"go-auth/pkg/api"
 	"go-auth/pkg/cache"
-	"go-auth/pkg/repository/user"
-	"go-auth/pkg/service"
 	"log"
 	"net/http"
 )
@@ -43,21 +41,11 @@ func (app *App) Run(addr string) {
 }
 
 func (app *App) SetupRoutes() {
-	userAPI := InitUserAPI(app)
+	userAPI := api.InitUserAPI(app)
 
 	app.Router.HandleFunc("/users", userAPI.FindAllUsers()).Methods("GET")
 	app.Router.HandleFunc("/users", userAPI.CreateUser()).Methods("POST")
 	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.FindByID()).Methods("GET")
 	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.UpdateUser()).Methods("PUT")
 	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.DeleteUser()).Methods("DELETE")
-}
-
-// InitUserAPI ..
-func InitUserAPI(a *App) api.UserAPI {
-	userRepository := user.NewRepository(a.DB)
-	userService := service.NewUserService(userRepository)
-	userAPI := api.NewUserAPI(userService, a.Cache)
-	userAPI.Migrate()
-
-	return userAPI
 }

@@ -3,8 +3,10 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"go-auth/pkg/app"
 	"go-auth/pkg/cache"
 	"go-auth/pkg/model"
+	"go-auth/pkg/repository/user"
 	"go-auth/pkg/service"
 	"log"
 	"net/http"
@@ -24,6 +26,15 @@ func NewUserAPI(u service.UserService, c *cache.Client) UserAPI {
 		UserService: u,
 		client:      c,
 	}
+}
+
+func InitUserAPI(a *app.App) UserAPI {
+	userRepository := user.NewRepository(a.DB)
+	userService := service.NewUserService(userRepository)
+	userAPI := NewUserAPI(userService, a.Cache)
+	userAPI.Migrate()
+
+	return userAPI
 }
 
 func (u *UserAPI) FindAllUsers() http.HandlerFunc {
