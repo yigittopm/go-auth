@@ -5,7 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"go-auth/pkg/api"
+	"go-auth/pkg/api/user"
 	"go-auth/pkg/cache"
 	"log"
 	"net/http"
@@ -41,11 +41,6 @@ func (app *App) Run(addr string) {
 }
 
 func (app *App) SetupRoutes() {
-	userAPI := api.InitUserAPI(app)
+	user.InitUserAPI(app)
 
-	app.Router.HandleFunc("/users", userAPI.FindAllUsers()).Methods("GET")
-	app.Router.HandleFunc("/users", userAPI.CreateUser()).Methods("POST")
-	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.FindByID()).Methods("GET")
-	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.UpdateUser()).Methods("PUT")
-	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.DeleteUser()).Methods("DELETE")
 }
