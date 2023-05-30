@@ -9,7 +9,7 @@ type PostService struct {
 	PostRepository *post.Repository
 }
 
-func NewPostRepository(p *post.Repository) PostService {
+func NewPostService(p *post.Repository) PostService {
 	return PostService{PostRepository: p}
 }
 

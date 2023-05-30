@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"go-auth/pkg/api/post"
 	"go-auth/pkg/api/user"
 	"go-auth/pkg/cache"
 	"log"
@@ -42,5 +43,6 @@ func (app *App) Run(addr string) {
 
 func (app *App) SetupRoutes() {
 	user.InitUserAPI(app)
+	post.InitPostAPI(app)
 
 }
