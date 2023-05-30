@@ -16,9 +16,9 @@ func NewRepository(db *gorm.DB) *Repository {
 }
 
 func (u *Repository) All() ([]model.User, error) {
-	var posts []model.User
-	err := u.db.Find(&posts).Error
-	return posts, err
+	var users []model.User
+	err := u.db.Find(&users).Error
+	return users, err
 }
 
 func (u *Repository) FindById(id uint) (*model.User, error) {
