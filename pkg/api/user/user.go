@@ -35,14 +35,14 @@ func InitUserAPI(app *app.App) {
 	userAPI := NewUserAPI(userService, app.Cache)
 	userAPI.Migrate()
 
-	app.Router.HandleFunc("/users", userAPI.FindAllUsers()).Methods("GET")
-	app.Router.HandleFunc("/users", userAPI.CreateUser()).Methods("POST")
-	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.FindByID()).Methods("GET")
-	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.UpdateUser()).Methods("PUT")
-	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.DeleteUser()).Methods("DELETE")
+	app.Router.HandleFunc("/users", userAPI.FindAll()).Methods(http.MethodGet)
+	app.Router.HandleFunc("/users", userAPI.CreateUser()).Methods(http.MethodPost)
+	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.FindByID()).Methods(http.MethodGet)
+	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.UpdateUser()).Methods(http.MethodPut)
+	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.DeleteUser()).Methods(http.MethodDelete)
 }
 
-func (u *UserAPI) FindAllUsers() http.HandlerFunc {
+func (u *UserAPI) FindAll() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		users, err := u.UserService.All()
 		if err != nil {

@@ -31,14 +31,14 @@ func dbSetup() (*gorm.DB, sqlmock.Sqlmock) {
 
 func routerSetup(api UserAPI) *mux.Router {
 	apiRouter := mux.NewRouter()
-	apiRouter.HandleFunc("/users", api.FindAllUsers()).Methods("GET")
+	apiRouter.HandleFunc("/users", api.FindAll()).Methods(http.MethodGet)
 	return apiRouter
 }
 
 func apiSetup(db *gorm.DB) UserAPI {
 	client := cache.New()
-	userReposiyory := user.NewRepository(db)
-	userService := service.NewUserService(userReposiyory)
+	userRepository := user.NewRepository(db)
+	userService := service.NewUserService(userRepository)
 	userApi := NewUserAPI(userService, client)
 
 	return userApi
