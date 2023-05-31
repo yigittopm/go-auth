@@ -1,12 +1,9 @@
-package post
+package api
 
 import (
 	"encoding/json"
-	"go-auth/pkg/api"
-	"go-auth/pkg/app"
 	"go-auth/pkg/cache"
 	"go-auth/pkg/model"
-	"go-auth/pkg/repository/post"
 	"go-auth/pkg/service"
 	"log"
 	"net/http"
@@ -24,25 +21,15 @@ func NewPostAPI(p service.PostService, c *cache.Client) PostAPI {
 	}
 }
 
-func InitPostAPI(app *app.App) {
-	postRepository := post.NewRepository(app.DB)
-	postService := service.NewPostService(postRepository)
-	postAPI := NewPostAPI(postService, app.Cache)
-	postAPI.Migrate()
-
-	app.Router.HandleFunc("/posts", postAPI.FindAll()).Methods(http.MethodGet)
-	app.Router.HandleFunc("/posts", postAPI.CreatePost()).Methods(http.MethodPost)
-}
-
 func (p *PostAPI) FindAll() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		posts, err := p.PostService.All()
 		if err != nil {
-			api.RespondWithError(w, http.StatusNotFound, err.Error())
+			RespondWithError(w, http.StatusNotFound, err.Error())
 			return
 		}
 
-		api.RespondWithJSON(w, http.StatusOK, posts)
+		RespondWithJSON(w, http.StatusOK, posts)
 	}
 }
 
@@ -52,18 +39,18 @@ func (p *PostAPI) CreatePost() http.HandlerFunc {
 
 		decoder := json.NewDecoder(r.Body)
 		if err := decoder.Decode(&postDTO); err != nil {
-			api.RespondWithError(w, http.StatusBadRequest, err.Error())
+			RespondWithError(w, http.StatusBadRequest, err.Error())
 			return
 		}
 		defer r.Body.Close()
 
 		createdPost, err := p.PostService.Save(model.ToPost(&postDTO))
 		if err != nil {
-			api.RespondWithError(w, http.StatusInternalServerError, err.Error())
+			RespondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		api.RespondWithJSON(w, http.StatusOK, model.ToPostDTO(createdPost))
+		RespondWithJSON(w, http.StatusOK, model.ToPostDTO(createdPost))
 	}
 }
 

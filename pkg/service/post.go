@@ -2,14 +2,14 @@ package service
 
 import (
 	"go-auth/pkg/model"
-	"go-auth/pkg/repository/post"
+	"go-auth/pkg/repository"
 )
 
 type PostService struct {
-	PostRepository *post.Repository
+	PostRepository *repository.PostRepository
 }
 
-func NewPostService(p *post.Repository) PostService {
+func NewPostService(p *repository.PostRepository) PostService {
 	return PostService{PostRepository: p}
 }
 
