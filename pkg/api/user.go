@@ -1,13 +1,10 @@
-package user
+package api
 
 import (
 	"encoding/json"
 	"fmt"
-	"go-auth/pkg/api"
-	"go-auth/pkg/app"
 	"go-auth/pkg/cache"
 	"go-auth/pkg/model"
-	"go-auth/pkg/repository/user"
 	"go-auth/pkg/service"
 	"log"
 	"net/http"
@@ -29,28 +26,15 @@ func NewUserAPI(u service.UserService, c *cache.Client) UserAPI {
 	}
 }
 
-func InitUserAPI(app *app.App) {
-	userRepository := user.NewRepository(app.DB)
-	userService := service.NewUserService(userRepository)
-	userAPI := NewUserAPI(userService, app.Cache)
-	userAPI.Migrate()
-
-	app.Router.HandleFunc("/users", userAPI.FindAll()).Methods(http.MethodGet)
-	app.Router.HandleFunc("/users", userAPI.CreateUser()).Methods(http.MethodPost)
-	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.FindByID()).Methods(http.MethodGet)
-	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.UpdateUser()).Methods(http.MethodPut)
-	app.Router.HandleFunc("/users/{id:[0-9]+}", userAPI.DeleteUser()).Methods(http.MethodDelete)
-}
-
 func (u *UserAPI) FindAll() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		users, err := u.UserService.All()
 		if err != nil {
-			api.RespondWithError(w, http.StatusNotFound, err.Error())
+			RespondWithError(w, http.StatusNotFound, err.Error())
 			return
 		}
 
-		api.RespondWithJSON(w, http.StatusOK, users)
+		RespondWithJSON(w, http.StatusOK, users)
 	}
 }
 
@@ -59,7 +43,7 @@ func (u *UserAPI) FindByID() http.HandlerFunc {
 		vars := mux.Vars(r)
 		id, err := strconv.Atoi(vars["id"])
 		if err != nil {
-			api.RespondWithError(w, http.StatusBadRequest, err.Error())
+			RespondWithError(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -73,13 +57,13 @@ func (u *UserAPI) FindByID() http.HandlerFunc {
 				log.Println(err)
 			}
 			fmt.Println(data)
-			api.RespondWithJSON(w, http.StatusOK, model.ToUserDTO(user))
+			RespondWithJSON(w, http.StatusOK, model.ToUserDTO(user))
 			return
 		}
 
 		user, err := u.UserService.FindById(uint(id))
 		if err != nil {
-			api.RespondWithError(w, http.StatusNotFound, err.Error())
+			RespondWithError(w, http.StatusNotFound, err.Error())
 			return
 		}
 
@@ -94,7 +78,7 @@ func (u *UserAPI) FindByID() http.HandlerFunc {
 		if err != nil {
 			log.Println(err)
 		}
-		api.RespondWithJSON(w, http.StatusOK, model.ToUserDTO(user))
+		RespondWithJSON(w, http.StatusOK, model.ToUserDTO(user))
 	}
 }
 
@@ -104,18 +88,18 @@ func (u *UserAPI) CreateUser() http.HandlerFunc {
 
 		decoder := json.NewDecoder(r.Body)
 		if err := decoder.Decode(&userDTO); err != nil {
-			api.RespondWithError(w, http.StatusBadRequest, err.Error())
+			RespondWithError(w, http.StatusBadRequest, err.Error())
 			return
 		}
 		defer r.Body.Close()
 
 		createdUser, err := u.UserService.Save(model.ToUser(&userDTO))
 		if err != nil {
-			api.RespondWithError(w, http.StatusInternalServerError, err.Error())
+			RespondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		api.RespondWithJSON(w, http.StatusOK, model.ToUserDTO(createdUser))
+		RespondWithJSON(w, http.StatusOK, model.ToUserDTO(createdUser))
 
 	}
 }
@@ -125,21 +109,21 @@ func (u *UserAPI) UpdateUser() http.HandlerFunc {
 		vars := mux.Vars(r)
 		id, err := strconv.Atoi(vars["id"])
 		if err != nil {
-			api.RespondWithError(w, http.StatusBadRequest, err.Error())
+			RespondWithError(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		var userDTO model.User
 		decoder := json.NewDecoder(r.Body)
 		if err := decoder.Decode(&userDTO); err != nil {
-			api.RespondWithError(w, http.StatusBadRequest, err.Error())
+			RespondWithError(w, http.StatusBadRequest, err.Error())
 			return
 		}
 		defer r.Body.Close()
 
 		user, err := u.UserService.FindById(uint(id))
 		if err != nil {
-			api.RespondWithError(w, http.StatusNotFound, err.Error())
+			RespondWithError(w, http.StatusNotFound, err.Error())
 			return
 		}
 
@@ -148,11 +132,11 @@ func (u *UserAPI) UpdateUser() http.HandlerFunc {
 		user.Email = userDTO.Email
 		updatedUser, err := u.UserService.Save(user)
 		if err != nil {
-			api.RespondWithError(w, http.StatusInternalServerError, err.Error())
+			RespondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		api.RespondWithJSON(w, http.StatusOK, model.ToUserDTO(updatedUser))
+		RespondWithJSON(w, http.StatusOK, model.ToUserDTO(updatedUser))
 	}
 }
 
@@ -161,19 +145,19 @@ func (u *UserAPI) DeleteUser() http.HandlerFunc {
 		vars := mux.Vars(r)
 		id, err := strconv.Atoi(vars["id"])
 		if err != nil {
-			api.RespondWithError(w, http.StatusBadRequest, err.Error())
+			RespondWithError(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
 		user, err := u.UserService.FindById(uint(id))
 		if err != nil {
-			api.RespondWithError(w, http.StatusNotFound, err.Error())
+			RespondWithError(w, http.StatusNotFound, err.Error())
 			return
 		}
 
 		err = u.UserService.Delete(user.ID)
 		if err != nil {
-			api.RespondWithError(w, http.StatusNotFound, err.Error())
+			RespondWithError(w, http.StatusNotFound, err.Error())
 			return
 		}
 		type Response struct {
@@ -183,7 +167,7 @@ func (u *UserAPI) DeleteUser() http.HandlerFunc {
 			Message: "Post deleted successfully!",
 		}
 
-		api.RespondWithJSON(w, http.StatusOK, response)
+		RespondWithJSON(w, http.StatusOK, response)
 	}
 }
 

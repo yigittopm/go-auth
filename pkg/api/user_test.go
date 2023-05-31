@@ -1,11 +1,11 @@
-package user
+package api
 
 import (
 	"database/sql/driver"
 	"encoding/json"
 	"go-auth/pkg/cache"
 	"go-auth/pkg/model"
-	"go-auth/pkg/repository/user"
+	"go-auth/pkg/repository"
 	"go-auth/pkg/service"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -37,7 +37,7 @@ func routerSetup(api UserAPI) *mux.Router {
 
 func apiSetup(db *gorm.DB) UserAPI {
 	client := cache.New()
-	userRepository := user.NewRepository(db)
+	userRepository := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepository)
 	userApi := NewUserAPI(userService, client)
 
