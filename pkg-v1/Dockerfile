@@ -3,9 +3,9 @@ WORKDIR /app
 ENV CGO_ENABLED=0
 ENV GOOS=linux
 ENV GOARCH=amd64
-COPY go.mod go.sum ./
+COPY ../go.mod go.sum ./
 RUN go mod download
-COPY ./ ./
+COPY .. ./
 RUN go build main.go
 
 FROM scratch as final

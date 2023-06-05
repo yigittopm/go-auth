@@ -3,7 +3,7 @@ package repository
 import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"go-auth/pkg/model"
+	"go-auth/pkg-v1/model"
 )
 
 type UserRepository struct {

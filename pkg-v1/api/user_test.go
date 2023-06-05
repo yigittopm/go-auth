@@ -3,10 +3,10 @@ package api
 import (
 	"database/sql/driver"
 	"encoding/json"
-	"go-auth/pkg/cache"
-	"go-auth/pkg/model"
-	"go-auth/pkg/repository"
-	"go-auth/pkg/service"
+	"go-auth/pkg-v1/cache"
+	"go-auth/pkg-v1/model"
+	"go-auth/pkg-v1/repository"
+	"go-auth/pkg-v1/service"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/go-test/deep"

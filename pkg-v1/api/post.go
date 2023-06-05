@@ -2,9 +2,9 @@ package api
 
 import (
 	"encoding/json"
-	"go-auth/pkg/cache"
-	"go-auth/pkg/model"
-	"go-auth/pkg/service"
+	"go-auth/pkg-v1/cache"
+	"go-auth/pkg-v1/model"
+	"go-auth/pkg-v1/service"
 	"log"
 	"net/http"
 )

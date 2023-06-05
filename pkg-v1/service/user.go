@@ -1,8 +1,8 @@
 package service
 
 import (
-	"go-auth/pkg/model"
-	"go-auth/pkg/repository"
+	"go-auth/pkg-v1/model"
+	"go-auth/pkg-v1/repository"
 )
 
 type UserService struct {
